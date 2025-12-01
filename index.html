@@ -1,11 +1,137 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bounding Box Drawer</title>
     <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/bounding-box-drawer.tsx"></script>
-  </body>
+</head>
+<body class="min-h-screen bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-2xl font-bold mb-6">Bounding Box Drawer</h1>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-2">Carregar Imagem:</label>
+            <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-2">Bounding Box JSON:</label>
+            <textarea
+                id="bboxInput"
+                placeholder='{"id": 994, "point1": {"x": 1300, "y": 0}, "point2": {"x": 1900, "y": 0}, "point3": {"x": 2650, "y": 1520}, "point4": {"x": 1270, "y": 1520}}'
+                class="w-full h-24 p-2 border border-gray-300 rounded font-mono text-sm"
+            ></textarea>
+        </div>
+
+        <div class="flex gap-2 mb-4">
+            <button
+                id="clearBboxBtn"
+                class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
+            >
+                Limpar Bounding Box
+            </button>
+            <button
+                id="clearImageBtn"
+                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            >
+                Limpar Imagem
+            </button>
+        </div>
+
+        <div id="canvasContainer" class="mt-6" style="display: none;">
+            <canvas id="canvas" class="max-w-full border border-gray-300"></canvas>
+        </div>
+    </div>
+
+    <img id="hiddenImage" style="display: none;" />
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const bboxInput = document.getElementById('bboxInput');
+        const clearBboxBtn = document.getElementById('clearBboxBtn');
+        const clearImageBtn = document.getElementById('clearImageBtn');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const hiddenImage = document.getElementById('hiddenImage');
+        const canvasContainer = document.getElementById('canvasContainer');
+
+        let currentImage = null;
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentImage = event.target.result;
+                    hiddenImage.src = currentImage;
+                    hiddenImage.onload = function() {
+                        drawBoundingBox();
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        bboxInput.addEventListener('input', function() {
+            if (currentImage) {
+                drawBoundingBox();
+            }
+        });
+
+        clearBboxBtn.addEventListener('click', function() {
+            bboxInput.value = '';
+            if (currentImage) {
+                drawBoundingBox();
+            }
+        });
+
+        clearImageBtn.addEventListener('click', function() {
+            currentImage = null;
+            bboxInput.value = '';
+            imageInput.value = '';
+            canvasContainer.style.display = 'none';
+        });
+
+        function drawBoundingBox() {
+            if (!currentImage) return;
+
+            canvas.width = hiddenImage.naturalWidth;
+            canvas.height = hiddenImage.naturalHeight;
+            
+            ctx.drawImage(hiddenImage, 0, 0);
+            
+            canvasContainer.style.display = 'block';
+
+            const bboxText = bboxInput.value.trim();
+            if (!bboxText) return;
+
+            try {
+                const box = JSON.parse(bboxText);
+                
+                ctx.strokeStyle = '#00ff00';
+                ctx.lineWidth = 4;
+                
+                ctx.beginPath();
+                ctx.moveTo(box.point1.x, box.point1.y);
+                ctx.lineTo(box.point2.x, box.point2.y);
+                ctx.lineTo(box.point3.x, box.point3.y);
+                ctx.lineTo(box.point4.x, box.point4.y);
+                ctx.closePath();
+                ctx.stroke();
+
+                ctx.fillStyle = '#00ff00';
+                ctx.font = '24px Arial';
+                ctx.fillText(`ID: ${box.id}`, box.point1.x, box.point1.y - 10);
+            } catch (error) {
+                console.error('Erro ao processar bounding box:', error);
+            }
+        }
+    </script>
+</body>
 </html>
