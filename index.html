@@ -1,137 +1,88 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bounding Box Drawer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>ROI vs Plate ROI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-gray-100 p-8">
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
-        <h1 class="text-2xl font-bold mb-6">Bounding Box Drawer</h1>
-        
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-2">Carregar Imagem:</label>
-            <input
-                type="file"
-                id="imageInput"
-                accept="image/*"
-                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            />
-        </div>
+<div class="max-w-5xl mx-auto bg-white p-6 rounded shadow">
+  <h1 class="text-xl font-bold mb-4">Comparar ROI x Plate ROI</h1>
 
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-2">Bounding Box JSON:</label>
-            <textarea
-                id="bboxInput"
-                placeholder='{"id": 994, "point1": {"x": 1300, "y": 0}, "point2": {"x": 1900, "y": 0}, "point3": {"x": 2650, "y": 1520}, "point4": {"x": 1270, "y": 1520}}'
-                class="w-full h-24 p-2 border border-gray-300 rounded font-mono text-sm"
-            ></textarea>
-        </div>
+  <input id="imageInput" type="file" accept="image/*" class="mb-4"/>
 
-        <div class="flex gap-2 mb-4">
-            <button
-                id="clearBboxBtn"
-                class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
-            >
-                Limpar Bounding Box
-            </button>
-            <button
-                id="clearImageBtn"
-                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-            >
-                Limpar Imagem
-            </button>
-        </div>
+  <div class="grid grid-cols-2 gap-4">
+    <textarea id="roiInput" class="border p-2 font-mono text-sm h-40"
+      placeholder="Faixa ROI JSON"></textarea>
 
-        <div id="canvasContainer" class="mt-6" style="display: none;">
-            <canvas id="canvas" class="max-w-full border border-gray-300"></canvas>
-        </div>
-    </div>
+    <textarea id="plateInput" class="border p-2 font-mono text-sm h-40"
+      placeholder="Plate ROI JSON"></textarea>
+  </div>
 
-    <img id="hiddenImage" style="display: none;" />
+  <canvas id="canvas" class="mt-6 border"></canvas>
+</div>
 
-    <script>
-        const imageInput = document.getElementById('imageInput');
-        const bboxInput = document.getElementById('bboxInput');
-        const clearBboxBtn = document.getElementById('clearBboxBtn');
-        const clearImageBtn = document.getElementById('clearImageBtn');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const hiddenImage = document.getElementById('hiddenImage');
-        const canvasContainer = document.getElementById('canvasContainer');
+<img id="hiddenImage" hidden />
 
-        let currentImage = null;
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const img = document.getElementById('hiddenImage');
 
-        imageInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    currentImage = event.target.result;
-                    hiddenImage.src = currentImage;
-                    hiddenImage.onload = function() {
-                        drawBoundingBox();
-                    };
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+document.getElementById('imageInput').onchange = e => {
+  const r = new FileReader();
+  r.onload = ev => {
+    img.src = ev.target.result;
+    img.onload = draw;
+  };
+  r.readAsDataURL(e.target.files[0]);
+};
 
-        bboxInput.addEventListener('input', function() {
-            if (currentImage) {
-                drawBoundingBox();
-            }
-        });
+document.getElementById('roiInput').oninput = draw;
+document.getElementById('plateInput').oninput = draw;
 
-        clearBboxBtn.addEventListener('click', function() {
-            bboxInput.value = '';
-            if (currentImage) {
-                drawBoundingBox();
-            }
-        });
+function draw() {
+  if (!img.src) return;
 
-        clearImageBtn.addEventListener('click', function() {
-            currentImage = null;
-            bboxInput.value = '';
-            imageInput.value = '';
-            canvasContainer.style.display = 'none';
-        });
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  ctx.drawImage(img, 0, 0);
 
-        function drawBoundingBox() {
-            if (!currentImage) return;
+  drawRoi();
+  drawPlate();
+}
 
-            canvas.width = hiddenImage.naturalWidth;
-            canvas.height = hiddenImage.naturalHeight;
-            
-            ctx.drawImage(hiddenImage, 0, 0);
-            
-            canvasContainer.style.display = 'block';
+function drawRoi() {
+  try {
+    const r = JSON.parse(roiInput.value);
+    ctx.strokeStyle = 'lime';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(r.point1.x, r.point1.y);
+    ctx.lineTo(r.point2.x, r.point2.y);
+    ctx.lineTo(r.point3.x, r.point3.y);
+    ctx.lineTo(r.point4.x, r.point4.y);
+    ctx.closePath();
+    ctx.stroke();
+  } catch {}
+}
 
-            const bboxText = bboxInput.value.trim();
-            if (!bboxText) return;
+function drawPlate() {
+  try {
+    const p = JSON.parse(plateInput.value);
+    const x = p.x1;
+    const y = p.y1;
+    const w = p.x2 - p.x1;
+    const h = p.y3 - p.y1;
 
-            try {
-                const box = JSON.parse(bboxText);
-                
-                ctx.strokeStyle = '#00ff00';
-                ctx.lineWidth = 4;
-                
-                ctx.beginPath();
-                ctx.moveTo(box.point1.x, box.point1.y);
-                ctx.lineTo(box.point2.x, box.point2.y);
-                ctx.lineTo(box.point3.x, box.point3.y);
-                ctx.lineTo(box.point4.x, box.point4.y);
-                ctx.closePath();
-                ctx.stroke();
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(x, y, w, h);
 
-                ctx.fillStyle = '#00ff00';
-                ctx.font = '24px Arial';
-                ctx.fillText(`ID: ${box.id}`, box.point1.x, box.point1.y - 10);
-            } catch (error) {
-                console.error('Erro ao processar bounding box:', error);
-            }
-        }
-    </script>
+    ctx.fillStyle = 'red';
+    ctx.fillText(`conf=${p.confidence}`, x, y - 5);
+  } catch {}
+}
+</script>
 </body>
 </html>
