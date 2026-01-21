@@ -101,6 +101,18 @@
         .result strong {
             color: #667eea;
         }
+        .vermelho {
+            color: #dc3545 !important;
+        }
+        .vermelho strong {
+            color: #dc3545 !important;
+        }
+        .verde {
+            color: #28a745 !important;
+        }
+        .verde strong {
+            color: #28a745 !important;
+        }
         #saida-group, #horas-group, #almoco-group {
             display: none;
         }
@@ -263,8 +275,12 @@
                 
                 let bancoHoras = 0;
                 let horasExtras = 0;
+                let horasConsumidas = 0;
                 
-                if (diffMin > jornadaNormal) {
+                if (diffMin < jornadaNormal) {
+                    // Consumiu banco de horas
+                    horasConsumidas = jornadaNormal - diffMin;
+                } else if (diffMin > jornadaNormal) {
                     const excedente = diffMin - jornadaNormal;
                     if (diffMin <= limiteBanco) {
                         // Tudo é banco de horas
@@ -280,17 +296,23 @@
                 const mBanco = Math.floor(bancoHoras % 60);
                 const hExtra = Math.floor(horasExtras / 60);
                 const mExtra = Math.floor(horasExtras % 60);
+                const hConsumidas = Math.floor(horasConsumidas / 60);
+                const mConsumidas = Math.floor(horasConsumidas % 60);
 
                 html += `
                     <p><strong>Horas trabalhadas:</strong> ${horasTrabalhadas}h ${minutosTrabalhados}min</p>
                 `;
                 
+                if (horasConsumidas > 0) {
+                    html += `<p class="vermelho"><strong>Horas consumidas do banco:</strong> ${hConsumidas}h ${mConsumidas}min</p>`;
+                }
+                
                 if (bancoHoras > 0) {
-                    html += `<p><strong>Banco de horas:</strong> ${hBanco}h ${mBanco}min</p>`;
+                    html += `<p class="verde"><strong>Banco de horas:</strong> ${hBanco}h ${mBanco}min</p>`;
                 }
                 
                 if (horasExtras > 0) {
-                    html += `<p><strong>Horas extras:</strong> ${hExtra}h ${mExtra}min</p>`;
+                    html += `<p class="verde"><strong>Horas extras:</strong> ${hExtra}h ${mExtra}min</p>`;
                 }
             }
 
