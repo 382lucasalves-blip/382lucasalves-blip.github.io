@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Horas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        input[type="time"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="time"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        .result p {
+            margin: 8px 0;
+            color: #333;
+        }
+        .result strong {
+            color: #667eea;
+        }
+        #saida-group, #horas-group, #almoco-group {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏰ Contador de Horas</h1>
+        
+        <div class="input-group">
+            <label for="entrada">Hora de Entrada:</label>
+            <input type="time" id="entrada" required>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="incluir-almoco" checked>
+            <label for="incluir-almoco">Incluir horário de almoço</label>
+        </div>
+
+        <div class="input-group" id="almoco-group">
+            <label for="almoco">Tempo de Almoço:</label>
+            <input type="time" id="almoco" value="01:00">
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="usar-horas">
+            <label for="usar-horas">Calcular por horas trabalhadas</label>
+        </div>
+
+        <div class="input-group" id="saida-group">
+            <label for="saida">Hora de Saída:</label>
+            <input type="time" id="saida">
+        </div>
+
+        <div class="input-group" id="horas-group">
+            <label for="horas">Horas a Trabalhar:</label>
+            <input type="time" id="horas" placeholder="Ex: 08:30">
+        </div>
+
+        <button onclick="calcular()">Calcular</button>
+
+        <div class="result" id="resultado" style="display: none;"></div>
+    </div>
+
+    <script>
+        const checkbox = document.getElementById('usar-horas');
+        const saidaGroup = document.getElementById('saida-group');
+        const horasGroup = document.getElementById('horas-group');
+        const checkboxAlmoco = document.getElementById('incluir-almoco');
+        const almocoGroup = document.getElementById('almoco-group');
+
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                saidaGroup.style.display = 'none';
+                horasGroup.style.display = 'block';
+            } else {
+                saidaGroup.style.display = 'block';
+                horasGroup.style.display = 'none';
+            }
+        });
+
+        checkboxAlmoco.addEventListener('change', function() {
+            if (this.checked) {
+                almocoGroup.style.display = 'block';
+            } else {
+                almocoGroup.style.display = 'none';
+            }
+        });
+
+        // Inicializar com saída visível e almoço visível
+        saidaGroup.style.display = 'block';
+        almocoGroup.style.display = 'block';
+
+        function calcular() {
+            const entrada = document.getElementById('entrada').value;
+            const saida = document.getElementById('saida').value;
+            const horas = document.getElementById('horas').value;
+            const usarHoras = checkbox.checked;
+            const incluirAlmoco = checkboxAlmoco.checked;
+            const almoco = document.getElementById('almoco').value;
+            const resultado = document.getElementById('resultado');
+
+            if (!entrada) {
+                alert('Por favor, informe a hora de entrada!');
+                return;
+            }
+
+            const [hEntrada, mEntrada] = entrada.split(':').map(Number);
+            const entradaMin = hEntrada * 60 + mEntrada;
+
+            let minAlmoco = 0;
+            if (incluirAlmoco && almoco) {
+                const [hAlmoco, mAlmoco] = almoco.split(':').map(Number);
+                minAlmoco = hAlmoco * 60 + mAlmoco;
+            }
+
+            let html = '';
+
+            if (usarHoras) {
+                // Calcular hora de saída baseado nas horas trabalhadas
+                if (!horas) {
+                    alert('Por favor, informe as horas a trabalhar!');
+                    return;
+                }
+
+                const [hTrabalhar, mTrabalhar] = horas.split(':').map(Number);
+                const minTrabalhar = hTrabalhar * 60 + mTrabalhar;
+
+                const saidaMin = entradaMin + minTrabalhar + minAlmoco;
+                const hSaida = Math.floor(saidaMin / 60) % 24;
+                const mSaida = Math.floor(saidaMin % 60);
+
+                html = `
+                    <p><strong>Entrada:</strong> ${entrada}</p>
+                    <p><strong>Horas a trabalhar:</strong> ${horas}</p>
+                `;
+                
+                if (incluirAlmoco) {
+                    html += `<p><strong>Almoço:</strong> ${almoco}</p>`;
+                }
+                
+                html += `<p><strong>Hora de saída:</strong> ${String(hSaida).padStart(2, '0')}:${String(mSaida).padStart(2, '0')}</p>`;
+            } else {
+                // Calcular horas trabalhadas baseado em entrada e saída
+                if (!saida) {
+                    alert('Por favor, informe a hora de saída!');
+                    return;
+                }
+
+                const [hSaida, mSaida] = saida.split(':').map(Number);
+                let saidaMin = hSaida * 60 + mSaida;
+
+                // Se saída for menor que entrada, considera próximo dia
+                if (saidaMin < entradaMin) {
+                    saidaMin += 24 * 60;
+                }
+
+                let diffMin = saidaMin - entradaMin;
+                
+                // Descontar almoço
+                if (incluirAlmoco) {
+                    diffMin -= minAlmoco;
+                }
+
+                const horasTrabalhadas = Math.floor(diffMin / 60);
+                const minutosTrabalhados = diffMin % 60;
+
+                html = `
+                    <p><strong>Entrada:</strong> ${entrada}</p>
+                    <p><strong>Saída:</strong> ${saida}</p>
+                `;
+                
+                if (incluirAlmoco) {
+                    html += `<p><strong>Almoço descontado:</strong> ${almoco}</p>`;
+                }
+                
+                html += `
+                    <p><strong>Horas trabalhadas:</strong> ${horasTrabalhadas}h ${minutosTrabalhados}min</p>
+                    <p><strong>Total em horas:</strong> ${(diffMin / 60).toFixed(2)}h</p>
+                `;
+            }
+
+            resultado.innerHTML = html;
+            resultado.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
