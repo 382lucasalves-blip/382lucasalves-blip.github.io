@@ -257,10 +257,41 @@
                     html += `<p><strong>Almoço descontado:</strong> ${almoco}</p>`;
                 }
                 
+                // Calcular banco de horas e horas extras
+                const jornadaNormal = 8 * 60 + 48; // 8h48m em minutos
+                const limiteBanco = 10 * 60; // 10h em minutos
+                
+                let bancoHoras = 0;
+                let horasExtras = 0;
+                
+                if (diffMin > jornadaNormal) {
+                    const excedente = diffMin - jornadaNormal;
+                    if (diffMin <= limiteBanco) {
+                        // Tudo é banco de horas
+                        bancoHoras = excedente;
+                    } else {
+                        // Até 10h é banco, resto é extra
+                        bancoHoras = limiteBanco - jornadaNormal;
+                        horasExtras = diffMin - limiteBanco;
+                    }
+                }
+                
+                const hBanco = Math.floor(bancoHoras / 60);
+                const mBanco = Math.floor(bancoHoras % 60);
+                const hExtra = Math.floor(horasExtras / 60);
+                const mExtra = Math.floor(horasExtras % 60);
+
                 html += `
                     <p><strong>Horas trabalhadas:</strong> ${horasTrabalhadas}h ${minutosTrabalhados}min</p>
-                    <p><strong>Total em horas:</strong> ${(diffMin / 60).toFixed(2)}h</p>
                 `;
+                
+                if (bancoHoras > 0) {
+                    html += `<p><strong>Banco de horas:</strong> ${hBanco}h ${mBanco}min</p>`;
+                }
+                
+                if (horasExtras > 0) {
+                    html += `<p><strong>Horas extras:</strong> ${hExtra}h ${mExtra}min</p>`;
+                }
             }
 
             resultado.innerHTML = html;
