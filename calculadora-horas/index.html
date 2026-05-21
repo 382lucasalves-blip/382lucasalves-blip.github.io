@@ -3,127 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contador de Horas</title>
+    <title>Café & Horas ☕</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-1: #d9c4a7;
+            --bg-2: #a78a6b;
+            --card: #fbf5ea;
+            --card-soft: #f1e7d4;
+            --ink: #3b2a1f;
+            --ink-soft: #6b5544;
+            --muted: #9a8267;
+            --accent: #6f4e37;
+            --accent-soft: #b08968;
+            --line: #e6d8bf;
+            --sage: #6f8f5e;
+            --terracotta: #b8533a;
+        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Nunito', system-ui, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background:
+                radial-gradient(circle at 20% 10%, #e9d6b8 0%, transparent 50%),
+                radial-gradient(circle at 80% 90%, #b89878 0%, transparent 50%),
+                linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+            color: var(--ink);
             padding: 20px;
         }
         .container {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            max-width: 400px;
+            background: var(--card);
+            padding: 32px 28px;
+            border-radius: 18px;
+            box-shadow:
+                0 1px 0 rgba(255,255,255,0.6) inset,
+                0 12px 32px rgba(59, 42, 31, 0.25);
+            max-width: 420px;
             width: 100%;
+            border: 1px solid var(--line);
         }
         h1 {
+            font-family: 'DM Serif Display', Georgia, serif;
             text-align: center;
-            color: #333;
-            margin-bottom: 25px;
-            font-size: 24px;
+            color: var(--accent);
+            margin-bottom: 6px;
+            font-size: 30px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 26px;
         }
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         label {
             display: block;
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: bold;
+            margin-bottom: 6px;
+            color: var(--ink-soft);
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.3px;
         }
         input[type="time"], input[type="number"] {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            padding: 11px 13px;
+            border: 1.5px solid var(--line);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            background: var(--card-soft);
+            color: var(--ink);
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
         }
         input[type="time"]:focus, input[type="number"]:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--accent-soft);
+            background: #fffaf0;
+            box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.15);
         }
         .checkbox-group {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             margin-right: 10px;
+            accent-color: var(--accent);
             cursor: pointer;
         }
         .checkbox-group label {
             margin: 0;
             cursor: pointer;
+            font-weight: 600;
         }
         button {
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 13px;
+            background: linear-gradient(135deg, var(--accent) 0%, #4e3525 100%);
+            color: #fbf5ea;
             border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: inherit;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(111, 78, 55, 0.3);
         }
         button:hover {
-            transform: translateY(-2px);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(111, 78, 55, 0.4);
         }
         button:active {
             transform: translateY(0);
         }
         .result {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 5px;
-            border-left: 4px solid #667eea;
+            margin-top: 22px;
+            padding: 18px;
+            background: var(--card-soft);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
         }
         .result p {
-            margin: 8px 0;
-            color: #333;
+            margin: 6px 0;
+            color: var(--ink);
+            font-size: 14px;
         }
         .result strong {
-            color: #667eea;
+            color: var(--accent);
+            font-weight: 700;
         }
-        .vermelho {
-            color: #dc3545 !important;
+        .result hr {
+            border: 0;
+            border-top: 1px dashed var(--line);
+            margin: 12px 0;
         }
-        .vermelho strong {
-            color: #dc3545 !important;
-        }
-        .verde {
-            color: #28a745 !important;
-        }
-        .verde strong {
-            color: #28a745 !important;
-        }
-        #saida-group, #horas-group, #almoco-group {
+        .vermelho, .vermelho strong { color: var(--terracotta) !important; }
+        .verde, .verde strong { color: var(--sage) !important; }
+        #almoco-group {
             display: none;
+        }
+        .section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 18px 0 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-label::before,
+        .section-label::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+        }
+        .hint {
+            font-size: 12px;
+            color: var(--muted);
+            margin: -10px 0 10px;
+            padding: 0 2px;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⏰ Contador de Horas</h1>
+        <h1>☕ Café &amp; Horas</h1>
+        <div class="subtitle">lofi time tracker</div>
         
         <div class="input-group">
-            <label for="entrada">Hora de Entrada:</label>
+            <label for="entrada">Hora de Entrada</label>
             <input type="time" id="entrada" required>
         </div>
 
@@ -133,23 +204,21 @@
         </div>
 
         <div class="input-group" id="almoco-group">
-            <label for="almoco">Tempo de Almoço:</label>
+            <label for="almoco">Tempo de Almoço</label>
             <input type="time" id="almoco" value="01:00">
         </div>
 
-        <div class="checkbox-group">
-            <input type="checkbox" id="usar-horas">
-            <label for="usar-horas">Calcular por horas trabalhadas</label>
+        <div class="section-label">preencha um, outro, ou os dois</div>
+        <div class="hint">A duração calcula a hora de saída. A hora de saída calcula quanto você trabalhou.</div>
+
+        <div class="input-group">
+            <label for="horas">Quero trabalhar (duração)</label>
+            <input type="time" id="horas" value="08:48" placeholder="Ex: 08:48">
         </div>
 
-        <div class="input-group" id="saida-group">
-            <label for="saida">Hora de Saída:</label>
-            <input type="time" id="saida">
-        </div>
-
-        <div class="input-group" id="horas-group">
-            <label for="horas">Horas a Trabalhar:</label>
-            <input type="time" id="horas" value="08:48" placeholder="Ex: 08:30">
+        <div class="input-group">
+            <label for="saida">Hora de saída (real ou hipotética)</label>
+            <input type="time" id="saida" placeholder="Ex: 17:00">
         </div>
 
         <button onclick="calcular()">Calcular</button>
@@ -158,45 +227,57 @@
     </div>
 
     <script>
-        const checkbox = document.getElementById('usar-horas');
-        const saidaGroup = document.getElementById('saida-group');
-        const horasGroup = document.getElementById('horas-group');
         const checkboxAlmoco = document.getElementById('incluir-almoco');
         const almocoGroup = document.getElementById('almoco-group');
 
-        checkbox.addEventListener('change', function() {
-            if (this.checked) {
-                saidaGroup.style.display = 'none';
-                horasGroup.style.display = 'block';
-            } else {
-                saidaGroup.style.display = 'block';
-                horasGroup.style.display = 'none';
-            }
-        });
-
         checkboxAlmoco.addEventListener('change', function() {
-            if (this.checked) {
-                almocoGroup.style.display = 'block';
-            } else {
-                almocoGroup.style.display = 'none';
-            }
+            almocoGroup.style.display = this.checked ? 'block' : 'none';
         });
-
-        // Inicializar com saída visível e almoço visível
-        saidaGroup.style.display = 'block';
         almocoGroup.style.display = 'block';
+
+        function fmt(min) {
+            const m = ((min % (24 * 60)) + 24 * 60) % (24 * 60);
+            return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+        }
+
+        function blocoHorasTrabalhadas(diffMin, incluirAlmoco, almoco) {
+            const jornadaNormal = 8 * 60 + 48;
+            const limiteBanco = 10 * 60;
+            let bancoHoras = 0, horasExtras = 0, horasConsumidas = 0;
+            if (diffMin < jornadaNormal) {
+                horasConsumidas = jornadaNormal - diffMin;
+            } else if (diffMin > jornadaNormal) {
+                if (diffMin <= limiteBanco) {
+                    bancoHoras = diffMin - jornadaNormal;
+                } else {
+                    bancoHoras = limiteBanco - jornadaNormal;
+                    horasExtras = diffMin - limiteBanco;
+                }
+            }
+            const horasTrabalhadas = Math.floor(diffMin / 60);
+            const minutosTrabalhados = diffMin % 60;
+            let h = `<p><strong>Horas trabalhadas:</strong> ${horasTrabalhadas}h ${minutosTrabalhados}min</p>`;
+            if (incluirAlmoco) h = `<p><strong>Almoço descontado:</strong> ${almoco}</p>` + h;
+            if (horasConsumidas > 0) h += `<p class="vermelho"><strong>Horas consumidas do banco:</strong> ${Math.floor(horasConsumidas/60)}h ${horasConsumidas%60}min</p>`;
+            if (bancoHoras > 0) h += `<p class="verde"><strong>Banco de horas:</strong> ${Math.floor(bancoHoras/60)}h ${bancoHoras%60}min</p>`;
+            if (horasExtras > 0) h += `<p class="verde"><strong>Horas extras:</strong> ${Math.floor(horasExtras/60)}h ${horasExtras%60}min</p>`;
+            return h;
+        }
 
         function calcular() {
             const entrada = document.getElementById('entrada').value;
             const saida = document.getElementById('saida').value;
             const horas = document.getElementById('horas').value;
-            const usarHoras = checkbox.checked;
             const incluirAlmoco = checkboxAlmoco.checked;
             const almoco = document.getElementById('almoco').value;
             const resultado = document.getElementById('resultado');
 
             if (!entrada) {
                 alert('Por favor, informe a hora de entrada!');
+                return;
+            }
+            if (!horas && !saida) {
+                alert('Informe a duração desejada e/ou a hora de saída.');
                 return;
             }
 
@@ -209,112 +290,33 @@
                 minAlmoco = hAlmoco * 60 + mAlmoco;
             }
 
-            let html = '';
+            let html = `<p><strong>Entrada:</strong> ${entrada}</p>`;
+            if (incluirAlmoco) html += `<p><strong>Almoço:</strong> ${almoco}</p>`;
 
-            if (usarHoras) {
-                // Calcular hora de saída baseado nas horas trabalhadas
-                if (!horas) {
-                    alert('Por favor, informe as horas a trabalhar!');
-                    return;
-                }
-
-                const [hTrabalhar, mTrabalhar] = horas.split(':').map(Number);
-                const minTrabalhar = hTrabalhar * 60 + mTrabalhar;
-
-                const saidaMin = entradaMin + minTrabalhar + minAlmoco;
-                const hSaida = Math.floor(saidaMin / 60) % 24;
-                const mSaida = Math.floor(saidaMin % 60);
-
-                html = `
-                    <p><strong>Entrada:</strong> ${entrada}</p>
-                    <p><strong>Horas a trabalhar:</strong> ${horas}</p>
-                `;
-                
-                if (incluirAlmoco) {
-                    html += `<p><strong>Almoço:</strong> ${almoco}</p>`;
-                }
-                
-                html += `<p><strong>Hora de saída:</strong> ${String(hSaida).padStart(2, '0')}:${String(mSaida).padStart(2, '0')}</p>`;
-            } else {
-                // Calcular horas trabalhadas baseado em entrada e saída
-                if (!saida) {
-                    alert('Por favor, informe a hora de saída!');
-                    return;
-                }
-
-                const [hSaida, mSaida] = saida.split(':').map(Number);
-                let saidaMin = hSaida * 60 + mSaida;
-
-                // Se saída for menor que entrada, considera próximo dia
-                if (saidaMin < entradaMin) {
-                    saidaMin += 24 * 60;
-                }
-
-                let diffMin = saidaMin - entradaMin;
-                
-                // Descontar almoço
-                if (incluirAlmoco) {
-                    diffMin -= minAlmoco;
-                }
-
-                const horasTrabalhadas = Math.floor(diffMin / 60);
-                const minutosTrabalhados = diffMin % 60;
-
-                html = `
-                    <p><strong>Entrada:</strong> ${entrada}</p>
-                    <p><strong>Saída:</strong> ${saida}</p>
-                `;
-                
-                if (incluirAlmoco) {
-                    html += `<p><strong>Almoço descontado:</strong> ${almoco}</p>`;
-                }
-                
-                // Calcular banco de horas e horas extras
-                const jornadaNormal = 8 * 60 + 48; // 8h48m em minutos
-                const limiteBanco = 10 * 60; // 10h em minutos
-                
-                let bancoHoras = 0;
-                let horasExtras = 0;
-                let horasConsumidas = 0;
-                
-                if (diffMin < jornadaNormal) {
-                    // Consumiu banco de horas
-                    horasConsumidas = jornadaNormal - diffMin;
-                } else if (diffMin > jornadaNormal) {
-                    const excedente = diffMin - jornadaNormal;
-                    if (diffMin <= limiteBanco) {
-                        // Tudo é banco de horas
-                        bancoHoras = excedente;
-                    } else {
-                        // Até 10h é banco, resto é extra
-                        bancoHoras = limiteBanco - jornadaNormal;
-                        horasExtras = diffMin - limiteBanco;
-                    }
-                }
-                
-                const hBanco = Math.floor(bancoHoras / 60);
-                const mBanco = Math.floor(bancoHoras % 60);
-                const hExtra = Math.floor(horasExtras / 60);
-                const mExtra = Math.floor(horasExtras % 60);
-                const hConsumidas = Math.floor(horasConsumidas / 60);
-                const mConsumidas = Math.floor(horasConsumidas % 60);
-
-                html += `
-                    <p><strong>Horas trabalhadas:</strong> ${horasTrabalhadas}h ${minutosTrabalhados}min</p>
-                `;
-                
-                if (horasConsumidas > 0) {
-                    html += `<p class="vermelho"><strong>Horas consumidas do banco:</strong> ${hConsumidas}h ${mConsumidas}min</p>`;
-                }
-                
-                if (bancoHoras > 0) {
-                    html += `<p class="verde"><strong>Banco de horas:</strong> ${hBanco}h ${mBanco}min</p>`;
-                }
-                
-                if (horasExtras > 0) {
-                    html += `<p class="verde"><strong>Horas extras:</strong> ${hExtra}h ${mExtra}min</p>`;
-                }
+            if (horas) {
+                const [hT, mT] = horas.split(':').map(Number);
+                const minTrabalhar = hT * 60 + mT;
+                const saidaCalc = entradaMin + minTrabalhar + minAlmoco;
+                html += `<hr>`;
+                html += `<p><strong>Para trabalhar ${horas}:</strong></p>`;
+                html += `<p>Hora de saída: <strong>${fmt(saidaCalc)}</strong></p>`;
             }
+
+            if (saida) {
+                const [hS, mS] = saida.split(':').map(Number);
+                let saidaMin = hS * 60 + mS;
+                if (saidaMin < entradaMin) saidaMin += 24 * 60;
+                let diff = saidaMin - entradaMin;
+                if (incluirAlmoco) diff -= minAlmoco;
+                html += `<hr>`;
+                html += `<p><strong>Saindo às ${saida}:</strong></p>`;
+                html += blocoHorasTrabalhadas(diff, incluirAlmoco, almoco);
+            }
+
+            // Referência: hora para fechar 10h (limite do banco)
+            const saida10 = entradaMin + 10 * 60 + minAlmoco;
+            html += `<hr>`;
+            html += `<p class="verde"><strong>☕ Saída p/ 10h (máx banco):</strong> ${fmt(saida10)}</p>`;
 
             resultado.innerHTML = html;
             resultado.style.display = 'block';
