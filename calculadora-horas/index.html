@@ -186,12 +186,51 @@
             padding: 0 2px;
             font-style: italic;
         }
+        .tolerance-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        .tol-chip {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: inherit;
+            letter-spacing: 0.3px;
+            border: 1.5px solid;
+        }
+        .tol-chip.before {
+            background: rgba(111, 143, 94, 0.08);
+            color: var(--sage);
+            border-color: rgba(111, 143, 94, 0.3);
+        }
+        .tol-chip.exact {
+            background: rgba(111, 78, 55, 0.10);
+            color: var(--accent);
+            border-color: var(--accent-soft);
+            font-size: 15px;
+        }
+        .tol-chip.after {
+            background: rgba(184, 83, 58, 0.08);
+            color: var(--terracotta);
+            border-color: rgba(184, 83, 58, 0.3);
+        }
+        .tol-label {
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            width: 100%;
+            margin-top: 2px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>☕ Café &amp; Horas</h1>
-        <div class="subtitle">lofi time tracker</div>
         
         <div class="input-group">
             <label for="entrada">Hora de Entrada</label>
@@ -299,7 +338,13 @@
                 const saidaCalc = entradaMin + minTrabalhar + minAlmoco;
                 html += `<hr>`;
                 html += `<p><strong>Para trabalhar ${horas}:</strong></p>`;
-                html += `<p>Hora de saída: <strong>${fmt(saidaCalc)}</strong></p>`;
+                html += `
+                    <div class="tolerance-row">
+                        <span class="tol-chip before">-10 &nbsp;${fmt(saidaCalc - 10)}</span>
+                        <span class="tol-chip exact">${fmt(saidaCalc)}</span>
+                        <span class="tol-chip after">${fmt(saidaCalc + 10)}&nbsp; +10</span>
+                        <span class="tol-label">tolerância do ponto ±10 min</span>
+                    </div>`;
             }
 
             if (saida) {
