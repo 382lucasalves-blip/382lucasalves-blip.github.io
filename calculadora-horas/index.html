@@ -283,9 +283,10 @@
             const jornadaNormal = 8 * 60 + 48;
             const limiteBanco = 10 * 60;
             let bancoHoras = 0, horasExtras = 0, horasConsumidas = 0;
-            if (diffMin < jornadaNormal) {
+            const tolerancia = 10;
+            if (diffMin < jornadaNormal - tolerancia) {
                 horasConsumidas = jornadaNormal - diffMin;
-            } else if (diffMin > jornadaNormal) {
+            } else if (diffMin > jornadaNormal + tolerancia) {
                 if (diffMin <= limiteBanco) {
                     bancoHoras = diffMin - jornadaNormal;
                 } else {
